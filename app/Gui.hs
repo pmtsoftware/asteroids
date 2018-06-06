@@ -14,14 +14,19 @@ initSDL = do
   present renderer
   return renderer
 
-draw :: (Double, Double) -> Renderer -> IO ()
-draw (x, y) renderer = do
+draw :: [(Double, Double)] -> Renderer -> IO ()
+draw items renderer = do
   rendererDrawColor renderer $= V4 0 0 0 255
   clear renderer
   rendererDrawColor renderer $= V4 255 255 255 255
-  let xInt = round x
-      yInt = round y
-  drawRect renderer $ Just (Rectangle (P $ V2 xInt yInt) (V2 20 20))
+  _ <- sequence $ fmap (drawSingle renderer) items
   present renderer
   return ()
+
+drawSingle :: Renderer -> (Double, Double) -> IO ()
+drawSingle r (x, y) = do
+  let xInt = round x
+      yInt = round y
+  drawRect r $ Just (Rectangle (P $ V2 xInt yInt) (V2 10 10))
+
 

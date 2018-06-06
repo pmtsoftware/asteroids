@@ -27,6 +27,7 @@ library:
   dependencies:
     - sdl2
     - Yampa
+    - random
 
 executables:
   asteroids-exe:
@@ -42,6 +43,7 @@ executables:
     - sdl2
     - linear
     - time
+    - random
 
 tests:
   asteroids-test:
