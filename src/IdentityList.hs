@@ -1,19 +1,17 @@
-{-# LANGUAGE BangPatterns #-}
-
 -- This is the idenity list module that came with the space invaders source
 -- i just added insertILA_, listToILA
 
 {- $Id: IdentityList.hs,v 1.2 2003/11/10 21:28:58 antony Exp $
 ******************************************************************************
-*                                                I N V A D E R S                                                  *
-*                                                                                                                         *
-*          Module:              IdentityList                                            *
+*                                                I N V A D E R S             *
+*                                                                            *
+*          Module:              IdentityList                                 *
 *          Purpose:     Association list with automatic key assignment and   *
-*                       identity-preserving map and filter operations.          *
-*          Author:              Henrik Nilsson                                  *
-*                                                                                                                         *
-*                   Copyright (c) Yale University, 2003                                           *
-*                                                                                                                         *
+*                       identity-preserving map and filter operations.       *
+*          Author:              Henrik Nilsson                               *
+*                                                                            *
+*                   Copyright (c) Yale University, 2003                      *
+*                                                                            *
 ******************************************************************************
 -}
 
@@ -21,7 +19,7 @@ module IdentityList (
     ILKey,        -- Identity-list key type
     IL,           -- Identity-list, abstract. Instance of functor.
     emptyIL,      -- :: IL a
-    insertIL_,   -- :: a -> IL a -> IL a
+    insertIL_,    -- :: a -> IL a -> IL a
     insertIL,     -- :: a -> IL a -> (ILKey, IL a)
     listToIL,     -- :: [a] -> IL a
     keysIL,       -- :: IL a -> [ILKey]
@@ -33,9 +31,9 @@ module IdentityList (
     mapFilterIL,  -- :: ((ILKey, a) -> Maybe b) -> IL a -> IL b
     lookupIL,     -- :: ILKey -> IL a -> Maybe a
     findIL,       -- :: ((ILKey, a) -> Bool) -> IL a -> Maybe a
-    mapFindIL,   -- :: ((ILKey, a) -> Maybe b) -> IL a -> Maybe b
-    findAllIL,   -- :: ((ILKey, a) -> Bool) -> IL a -> [a]
-    mapFindAllIL,  -- :: ((ILKey, a) -> Maybe b) -> IL a -> [b]
+    mapFindIL,    -- :: ((ILKey, a) -> Maybe b) -> IL a -> Maybe b
+    findAllIL,    -- :: ((ILKey, a) -> Bool) -> IL a -> [a]
+    mapFindAllIL, -- :: ((ILKey, a) -> Maybe b) -> IL a -> [b]
     insertILA_,
     listToILA
 

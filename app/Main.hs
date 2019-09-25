@@ -3,15 +3,19 @@
 module Main where
 
 import FRP.Yampa
-import FRP.Yampa.Vector2
-import SDL  (Renderer)
+import Data.Vector2
+import SDL  (Renderer, pollEvents)
 import Control.Concurrent (threadDelay)
 import Data.IORef
 import Data.Time.Clock
 import System.Random
+import Control.Monad (unless)
 
 -- project imports
 import Gui
+import Commands (getCommands)
+-- library imports
+import Game
 
 type Position = Vector2 Double
 type Velocity = Vector2 Double
@@ -19,21 +23,30 @@ type ObjectState = (Position, Velocity)
 
 data Reflection = None | XReflection | YReflection
 
+type GIn = ()
+type GOut = [(Position, Velocity)]
+
 main :: IO ()
 main = do
   g <- newStdGen
   renderer <- initSDL
   t <- getCurrentTime
   timeRef <- newIORef t
-  play g timeRef renderer
+  rh <- reactInit initialize (actuate' renderer) (runMany g) 
+  gameLoop timeRef rh
+  return ()
 
-play :: RandomGen g => g -> IORef UTCTime -> Renderer -> IO ()
---play g t r = reactimate initialize (sense t) (actuate r) (run p v)
-  --where (p, g') = randomPosition g
-  --      (v, _)  = randomVelocity g'
-play g t r = reactimate initialize (sense t) (actuate r) (runMany g)
+gameLoop :: IORef UTCTime ->  ReactHandle GIn GOut -> IO ()
+gameLoop t rh = do
+  (dt, input) <- sense' t
+  flag <- react rh (dt, input)
+  commands <- getCommands
+  unless (quit commands) (gameLoop t rh)
 
-runMany :: RandomGen g => g -> SF () [(Position, Velocity)]
+quit :: [Command] -> Bool
+quit = elem Exit
+
+runMany :: RandomGen g => g -> SF GIn GOut
 runMany g = parB $ take 50 $ objectFactory g
 
 objectFactory :: RandomGen g => g -> [SF () ObjectState]
@@ -52,8 +65,8 @@ objectFactory g = fmap cons randomPxyVxy
                                         v = vector2 vx vy
                                     in run p v
 
-sense :: IORef UTCTime -> Bool -> IO (Double, Maybe ())
-sense timeRef _ = do
+sense' :: IORef UTCTime -> IO (Double, Maybe ())
+sense' timeRef = do
   now <- getCurrentTime
   lastTime <- readIORef timeRef
   writeIORef timeRef now
@@ -63,8 +76,8 @@ sense timeRef _ = do
 initialize :: IO ()
 initialize = return ()
 
-actuate :: Renderer -> Bool -> [(Position, Velocity)] -> IO Bool
-actuate renderer _ objects = do
+actuate' :: Renderer -> ReactHandle GIn GOut -> Bool -> GOut -> IO Bool
+actuate' renderer _  _ objects = do
   let positions = fmap (\(p, v) -> vector2XY p) objects
   draw positions renderer
   return False
