@@ -1,0 +1,17 @@
+cabal-version:       >=1.10
+name:                asteroids
+version:             0.1.0.0
+license-file:        LICENSE
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+executable asteroids
+  main-is:             Main.hs
+  other-modules:      Player
+                    , Game
+                    , Shapes
+  build-depends:        base >=4.13&& <4.14
+                      , gloss >=1.13 && <1.14
+                      , Yampa >=0.13 && <0.14
+                      , simple-affine-space >=0.1 && <0.2
+  default-language:    Haskell2010
